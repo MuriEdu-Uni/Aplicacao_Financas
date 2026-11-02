@@ -1,0 +1,300 @@
+{
+  "profile": {
+    "name": "Murilo Santos",
+    "email": "murilo.santos@aluno.unicesumar.edu.br",
+    "monthlyIncomeGoal": 4500.0,
+    "workHoursPerMonth": 160,
+    "currency": "BRL",
+    "accessibilityFont": "normal",
+    "highContrast": false
+  },
+  "categories": [
+    { "id": "cat_alimentacao", "name": "Alimentação", "type": "expense", "color": "#2563eb", "icon": "utensils", "budget": 1200.0 },
+    { "id": "cat_moradia", "name": "Moradia & Contas", "type": "expense", "color": "#1d4ed8", "icon": "home", "budget": 1500.0 },
+    { "id": "cat_transporte", "name": "Transporte", "type": "expense", "color": "#0284c7", "icon": "car", "budget": 450.0 },
+    { "id": "cat_saude", "name": "Saúde & Farmácia", "type": "expense", "color": "#0ea5e9", "icon": "activity", "budget": 300.0 },
+    { "id": "cat_educacao", "name": "Educação & Livros", "type": "expense", "color": "#3b82f6", "icon": "book", "budget": 250.0 },
+    { "id": "cat_lazer", "name": "Lazer & Entretenimento", "type": "expense", "color": "#6366f1", "icon": "film", "budget": 350.0 },
+    { "id": "cat_compras", "name": "Compras & Vestuário", "type": "expense", "color": "#4f46e5", "icon": "shopping-bag", "budget": 200.0 },
+    { "id": "cat_outras_desp", "name": "Outras Despesas", "type": "expense", "color": "#64748b", "icon": "more-horizontal", "budget": 150.0 },
+    { "id": "cat_salario", "name": "Salário & Renda Principal", "type": "income", "color": "#059669", "icon": "briefcase", "budget": 0.0 },
+    { "id": "cat_freelance", "name": "Freelance & Extras", "type": "income", "color": "#10b981", "icon": "zap", "budget": 0.0 },
+    { "id": "cat_rendimentos", "name": "Rendimentos & Investimentos", "type": "income", "color": "#0d9488", "icon": "trending-up", "budget": 0.0 },
+    { "id": "cat_outras_rec", "name": "Outras Receitas", "type": "income", "color": "#34d399", "icon": "dollar-sign", "budget": 0.0 }
+  ],
+  "goals": [
+    {
+      "id": "goal_reserva",
+      "title": "Reserva de Emergência (6 Meses)",
+      "description": "Segurança financeira conforme recomendado por Gitman (2010) e Savoia et al. (2007)",
+      "targetAmount": 15000.0,
+      "currentAmount": 8500.0,
+      "targetDate": "2026-12-31",
+      "category": "cat_rendimentos",
+      "color": "#2563eb"
+    },
+    {
+      "id": "goal_notebook",
+      "title": "Notebook para Estudos e Desenvolvimento",
+      "description": "Equipamento para pesquisas acadêmicas e projetos em Análise e Desenvolvimento de Sistemas",
+      "targetAmount": 4200.0,
+      "currentAmount": 2600.0,
+      "targetDate": "2026-08-15",
+      "category": "cat_educacao",
+      "color": "#0284c7"
+    },
+    {
+      "id": "goal_viagem",
+      "title": "Fundo para Congresso Tecnológico",
+      "description": "Participação na Mostra de Iniciação Científica e Tecnológica",
+      "targetAmount": 1200.0,
+      "currentAmount": 900.0,
+      "targetDate": "2026-10-10",
+      "category": "cat_lazer",
+      "color": "#3b82f6"
+    }
+  ],
+  "impulseList": [
+    {
+      "id": "imp_1",
+      "name": "Tênis Esportivo Lançamento",
+      "price": 599.9,
+      "dateAdded": "2026-11-01T10:00:00.000Z",
+      "decision": "pending",
+      "reason": "Visto em anúncio de rede social"
+    }
+  ],
+  "transactions": [
+    {
+      "id": "tx_1",
+      "description": "Salário Mensal - Empresa de Tecnologia",
+      "amount": 4500.0,
+      "type": "income",
+      "categoryId": "cat_salario",
+      "date": "2026-11-05",
+      "paymentMethod": "Transferência / PIX",
+      "status": "completed",
+      "notes": "Salário líquido"
+    },
+    {
+      "id": "tx_2",
+      "description": "Desenvolvimento de Landing Page (Freelance)",
+      "amount": 950.0,
+      "type": "income",
+      "categoryId": "cat_freelance",
+      "date": "2026-11-12",
+      "paymentMethod": "PIX",
+      "status": "completed",
+      "notes": "Projeto web entregue com sucesso"
+    },
+    {
+      "id": "tx_3",
+      "description": "Rendimentos CDB e Tesouro Direto",
+      "amount": 142.8,
+      "type": "income",
+      "categoryId": "cat_rendimentos",
+      "date": "2026-11-15",
+      "paymentMethod": "Transferência / PIX",
+      "status": "completed",
+      "notes": "Rendimento mensal da reserva"
+    },
+    {
+      "id": "tx_4",
+      "description": "Aluguel do Apartamento e Condomínio",
+      "amount": 1350.0,
+      "type": "expense",
+      "categoryId": "cat_moradia",
+      "date": "2026-11-07",
+      "paymentMethod": "Boleto",
+      "status": "completed",
+      "notes": "Moradia fixa"
+    },
+    {
+      "id": "tx_5",
+      "description": "Conta de Energia Copel",
+      "amount": 145.3,
+      "type": "expense",
+      "categoryId": "cat_moradia",
+      "date": "2026-11-10",
+      "paymentMethod": "PIX",
+      "status": "completed",
+      "notes": "Consumo de luz"
+    },
+    {
+      "id": "tx_6",
+      "description": "Internet Fibra 500MB",
+      "amount": 119.9,
+      "type": "expense",
+      "categoryId": "cat_moradia",
+      "date": "2026-11-11",
+      "paymentMethod": "Cartão de Crédito",
+      "status": "completed",
+      "notes": "Essencial para trabalho remoto e estudos"
+    },
+    {
+      "id": "tx_7",
+      "description": "Supermercado Muffato - Compras do Mês",
+      "amount": 680.5,
+      "type": "expense",
+      "categoryId": "cat_alimentacao",
+      "date": "2026-11-06",
+      "paymentMethod": "Cartão de Débito",
+      "status": "completed",
+      "notes": "Itens básicos e feira"
+    },
+    {
+      "id": "tx_8",
+      "description": "Supermercado Condor - Reposição Semanal",
+      "amount": 215.4,
+      "type": "expense",
+      "categoryId": "cat_alimentacao",
+      "date": "2026-11-18",
+      "paymentMethod": "Cartão de Débito",
+      "status": "completed",
+      "notes": "Frutas, legumes e laticínios"
+    },
+    {
+      "id": "tx_9",
+      "description": "Abastecimento Gasolina Shell",
+      "amount": 190.0,
+      "type": "expense",
+      "categoryId": "cat_transporte",
+      "date": "2026-11-09",
+      "paymentMethod": "PIX",
+      "status": "completed",
+      "notes": "Deslocamento faculdade e trabalho"
+    },
+    {
+      "id": "tx_10",
+      "description": "Recarga Cartão Transporte Público / Ônibus",
+      "amount": 120.0,
+      "type": "expense",
+      "categoryId": "cat_transporte",
+      "date": "2026-11-14",
+      "paymentMethod": "PIX",
+      "status": "completed",
+      "notes": "Passagens do mês"
+    },
+    {
+      "id": "tx_11",
+      "description": "Farmácia Droga Raia - Vitaminas e Medicamentos",
+      "amount": 115.6,
+      "type": "expense",
+      "categoryId": "cat_saude",
+      "date": "2026-11-08",
+      "paymentMethod": "Cartão de Crédito",
+      "status": "completed",
+      "notes": "Cuidados preventivos com a saúde"
+    },
+    {
+      "id": "tx_12",
+      "description": "Mensalidade UniCesumar - ADS",
+      "amount": 249.9,
+      "type": "expense",
+      "categoryId": "cat_educacao",
+      "date": "2026-11-10",
+      "paymentMethod": "Boleto",
+      "status": "completed",
+      "notes": "Investimento em formação superior"
+    },
+    {
+      "id": "tx_13",
+      "description": "Mensalidade Academia Smart Fit",
+      "amount": 119.9,
+      "type": "expense",
+      "categoryId": "cat_lazer",
+      "date": "2026-11-12",
+      "paymentMethod": "Cartão de Crédito",
+      "status": "completed",
+      "notes": "Saúde física e mental"
+    },
+    {
+      "id": "tx_14",
+      "description": "Assinaturas Digitais (Netflix + Spotify)",
+      "amount": 74.8,
+      "type": "expense",
+      "categoryId": "cat_lazer",
+      "date": "2026-11-16",
+      "paymentMethod": "Cartão de Crédito",
+      "status": "completed",
+      "notes": "Lazer e entretenimento em casa"
+    },
+    {
+      "id": "tx_15",
+      "description": "Almoço Restaurante com Colegas de Projeto",
+      "amount": 88.5,
+      "type": "expense",
+      "categoryId": "cat_alimentacao",
+      "date": "2026-11-20",
+      "paymentMethod": "PIX",
+      "status": "completed",
+      "notes": "Alinhamento acadêmico da mostra"
+    },
+    {
+      "id": "tx_prev_1",
+      "description": "Salário Mensal Outubro",
+      "amount": 4500.0,
+      "type": "income",
+      "categoryId": "cat_salario",
+      "date": "2026-10-05",
+      "paymentMethod": "Transferência / PIX",
+      "status": "completed",
+      "notes": "Mês anterior"
+    },
+    {
+      "id": "tx_prev_2",
+      "description": "Projeto Freelance Backend Java",
+      "amount": 800.0,
+      "type": "income",
+      "categoryId": "cat_freelance",
+      "date": "2026-10-14",
+      "paymentMethod": "PIX",
+      "status": "completed",
+      "notes": "Mês anterior"
+    },
+    {
+      "id": "tx_prev_3",
+      "description": "Aluguel e Condomínio Outubro",
+      "amount": 1350.0,
+      "type": "expense",
+      "categoryId": "cat_moradia",
+      "date": "2026-10-07",
+      "paymentMethod": "Boleto",
+      "status": "completed",
+      "notes": "Mês anterior"
+    },
+    {
+      "id": "tx_prev_4",
+      "description": "Supermercado e Feira",
+      "amount": 890.0,
+      "type": "expense",
+      "categoryId": "cat_alimentacao",
+      "date": "2026-10-08",
+      "paymentMethod": "Cartão de Débito",
+      "status": "completed",
+      "notes": "Mês anterior"
+    },
+    {
+      "id": "tx_prev_5",
+      "description": "Combustível e Transporte",
+      "amount": 340.0,
+      "type": "expense",
+      "categoryId": "cat_transporte",
+      "date": "2026-10-12",
+      "paymentMethod": "PIX",
+      "status": "completed",
+      "notes": "Mês anterior"
+    },
+    {
+      "id": "tx_prev_6",
+      "description": "UniCesumar e Livros",
+      "amount": 280.0,
+      "type": "expense",
+      "categoryId": "cat_educacao",
+      "date": "2026-10-10",
+      "paymentMethod": "Boleto",
+      "status": "completed",
+      "notes": "Mês anterior"
+    }
+  ]
+}

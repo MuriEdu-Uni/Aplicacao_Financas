@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gestão Financeira Pessoal | UniCesumar</title>
+  <meta name="description" content="Aplicação de Gestão Financeira Pessoal desenvolvida para organização, acompanhamento e análise orçamentária. Autores: Dennis Gabriel de Oliveira e Murilo da Silva Santos.">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💰</text></svg>">
+</head>
+<body>
+
+  <div class="app-layout">
+
+    <!-- SIDEBAR LATERAL NAVEGAÇÃO -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="logo-badge">💎</div>
+        <div>
+          <h1>FinGestão<span>Controle & Planejamento</span></h1>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <button class="nav-link active" data-tab="dashboard">
+          <span class="nav-icon">📊</span> Visão Geral
+        </button>
+        <button class="nav-link" data-tab="transactions">
+          <span class="nav-icon">📑</span> Movimentações
+        </button>
+        <button class="nav-link" data-tab="budgets">
+          <span class="nav-icon">🎯</span> Orçamentos & Metas
+        </button>
+        <button class="nav-link" data-tab="psychology">
+          <span class="nav-icon">🧠</span> Consumo Consciente
+        </button>
+        <button class="nav-link" data-tab="reports">
+          <span class="nav-icon">📈</span> Relatórios
+        </button>
+        <button class="nav-link" data-tab="categories">
+          <span class="nav-icon">🏷️</span> Categorias
+        </button>
+        <button class="nav-link" data-tab="profile">
+          <span class="nav-icon">⚙️</span> Perfil & Dados
+        </button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="academic-badge">
+          <strong>Projeto de Pesquisa</strong>
+          <span>Dennis Oliveira & Murilo Santos</span><br>
+          <span style="opacity: 0.8;">UniCesumar &bull; ADS</span>
+        </div>
+        <button class="btn btn-secondary btn-sm" style="width: 100%; margin-top: 10px;" onclick="app.openModal('modalAbout')">
+          ℹ️ Sobre o Artigo
+        </button>
+      </div>
+    </aside>
+
+    <!-- WRAPPER PRINCIPAL DE CONTEÚDO -->
+    <div class="main-wrapper">
+
+      <!-- NAVBAR SUPERIOR -->
+      <header class="top-navbar">
+        <div class="navbar-left">
+          <!-- Filtro Global de Período -->
+          <div class="period-filter-group">
+            <label for="filterMonth">📅 Período:</label>
+            <select id="filterMonth" class="period-select">
+              <option value="0">Janeiro</option>
+              <option value="1">Fevereiro</option>
+              <option value="2">Março</option>
+              <option value="3">Abril</option>
+              <option value="4">Maio</option>
+              <option value="5">Junho</option>
+              <option value="6">Julho</option>
+              <option value="7">Agosto</option>
+              <option value="8">Setembro</option>
+              <option value="9">Outubro</option>
+              <option value="10">Novembro</option>
+              <option value="11">Dezembro</option>
+            </select>
+            <select id="filterYear" class="period-select">
+              <option value="2025">2025</option>
+              <option value="2026" selected>2026</option>
+              <option value="2027">2027</option>
+            </select>
+          </div>
+
+          <!-- Status do Backend / Modo Local -->
+          <span id="syncStatusBadge" class="status-badge local">
+            <span class="badge-dot local"></span> Modo Local Offline
+          </span>
+        </div>
+
+        <div class="navbar-right">
+          <!-- Barra de Acessibilidade (Artigo: Inclusão do grupo dos idosos) -->
+          <div class="accessibility-bar" title="Recursos de Acessibilidade (Fácil leitura)">
+            <span style="font-size: 11px; font-weight: 600; color: #64748b; margin-right: 4px;">Fonte:</span>
+            <button class="btn-acc" onclick="app.setAccessibilityFont('normal')" title="Tamanho Padrão">A</button>
+            <button class="btn-acc" onclick="app.setAccessibilityFont('large')" title="Tamanho Grande">A+</button>
+            <button class="btn-acc" onclick="app.setAccessibilityFont('xlarge')" title="Tamanho Extra Grande">A++</button>
+            <button class="btn-acc" onclick="app.toggleHighContrast()" title="Alternar Alto Contraste">👁️ Contraste</button>
+          </div>
+
+          <!-- Botão Principal de Cadastro de Movimentação -->
+          <button class="btn btn-primary" onclick="app.openTransactionModal('expense')">
+            <span>+</span> Nova Movimentação
+          </button>
+        </div>
+      </header>
+
+      <!-- ÁREA DE CONTEÚDO DINÂMICO -->
+      <main class="content-area">
+
+        <!-- Banner de Alertas Preventivos de Orçamento -->
+        <div id="budgetAlertNotice" style="display: none;"></div>
+
+        <!-- ===================================================================
+             ABA 1: DASHBOARD / VISÃO GERAL
+             =================================================================== -->
+        <section id="tab-dashboard" class="tab-content active">
+
+          <!-- Cards de Indicadores Principais (KPIs) -->
+          <div class="stats-grid">
+            <div class="stat-card card-income">
+              <div class="stat-header">
+                <span class="stat-title">Receitas do Mês</span>
+                <span class="stat-icon">↗</span>
+              </div>
+              <div class="stat-value text-positive" id="headerTotalIncome">R$ 0,00</div>
+              <div class="stat-footer">
+                <span class="stat-badge badge-success">Entradas</span>
+                <span>Salário, extras e investimentos</span>
+              </div>
+            </div>
+
+            <div class="stat-card card-expense">
+              <div class="stat-header">
+                <span class="stat-title">Despesas do Mês</span>
+                <span class="stat-icon">↘</span>
+              </div>
+              <div class="stat-value text-negative" id="headerTotalExpense">R$ 0,00</div>
+              <div class="stat-footer">
+                <span class="stat-badge badge-danger">Saídas</span>
+                <span>Gastos fixos e variáveis</span>
+              </div>
+            </div>
+
+            <div class="stat-card card-balance">
+              <div class="stat-header">
+                <span class="stat-title">Saldo Líquido</span>
+                <span class="stat-icon">⚖️</span>
+              </div>
+              <div class="stat-value text-positive" id="headerBalance">R$ 0,00</div>
+              <div class="stat-footer">
+                <span>Taxa de Poupança:</span>
+                <span class="stat-badge badge-success" id="headerSavingsRate">0%</span>
+              </div>
+            </div>
+
+            <div class="stat-card card-accumulated">
+              <div class="stat-header">
+                <span class="stat-title">Patrimônio Geral</span>
+                <span class="stat-icon">🏛️</span>
+              </div>
+              <div class="stat-value" id="headerTotalAccumulated">R$ 0,00</div>
+              <div class="stat-footer">
+                <span class="stat-badge badge-normal">Total Histórico</span>
+                <span>Saldo acumulado geral</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Grade Principal de Gráficos (Rosquinha + Barras Comparativas) -->
+          <div class="charts-grid-main">
+            <!-- Gráfico de Rosquinha: Distribuição de Despesas por Categoria -->
+            <div class="chart-card">
+              <div class="chart-header">
+                <div>
+                  <h3>Despesas por Categoria</h3>
+                  <span class="chart-subtitle">Onde seu dinheiro está sendo utilizado</span>
+                </div>
+              </div>
+              <div id="donutChartContainer" style="min-height: 260px;"></div>
+            </div>
+
+            <!-- Gráfico de Barras: Comparativo Receitas vs Despesas Mensal -->
+            <div class="chart-card">
+              <div class="chart-header">
+                <div>
+                  <h3>Comparativo Mensal</h3>
+                  <span class="chart-subtitle">Evolução de receitas versus despesas</span>
+                </div>
+              </div>
+              <div id="barChartContainer" style="min-height: 260px;"></div>
+            </div>
+          </div>
+
+          <!-- Gráfico de Linha do Fluxo Diário -->
+          <div class="daily-flow-card">
+            <div class="chart-header">
+              <div>
+                <h3>Curva de Saldo & Fluxo de Caixa Diário</h3>
+                <span class="chart-subtitle">Acompanhamento contínuo da disponibilidade financeira ao longo do mês</span>
+              </div>
+            </div>
+            <div id="lineChartContainer"></div>
+          </div>
+
+          <!-- Seção Inferior: Recentes + Regra 50-30-20 -->
+          <div class="dashboard-bottom-grid">
+            <div class="recent-transactions-card">
+              <div class="chart-header">
+                <h3>Últimas Movimentações</h3>
+                <button class="btn btn-secondary btn-sm" onclick="app.switchTab('transactions')">Ver Todas</button>
+              </div>
+              <div id="recentTransactionsList"></div>
+            </div>
+
+            <div id="rule503020Container"></div>
+          </div>
+
+        </section>
+
+        <!-- ===================================================================
+             ABA 2: HISTÓRICO COMPLETO DE MOVIMENTAÇÕES (Objetivo 5)
+             =================================================================== -->
+        <section id="tab-transactions" class="tab-content">
+          <div class="table-card">
+            <div class="table-toolbar">
+              <div class="toolbar-filters">
+                <input type="text" id="tableSearch" class="input-search" placeholder="🔍 Buscar por descrição, valor ou nota...">
+                
+                <select id="filterType" class="select-filter">
+                  <option value="all">Todos os Tipos</option>
+                  <option value="expense">Apenas Despesas</option>
+                  <option value="income">Apenas Receitas</option>
+                </select>
+
+                <select id="filterCategory" class="select-filter">
+                  <option value="all">Todas as Categorias</option>
+                </select>
+
+                <select id="sortTransactions" class="select-filter">
+                  <option value="date-desc">Mais Recentes Primeiro</option>
+                  <option value="date-asc">Mais Antigas Primeiro</option>
+                  <option value="amount-desc">Maior Valor</option>
+                  <option value="amount-asc">Menor Valor</option>
+                </select>
+              </div>
+
+              <div class="toolbar-actions">
+                <button class="btn btn-primary btn-sm" onclick="app.openTransactionModal('expense')">
+                  + Nova Movimentação
+                </button>
+              </div>
+            </div>
+
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Data</th>
+                    <th>Descrição & Detalhes</th>
+                    <th>Categoria</th>
+                    <th>Forma</th>
+                    <th>Tipo</th>
+                    <th>Valor</th>
+                    <th style="text-align: center;">Ações</th>
+                  </tr>
+                </thead>
+                <tbody id="transactionsTableBody">
+                  <!-- Injetado dinamicamente via app.js -->
+                </tbody>
+              </table>
+            </div>
+
+            <div class="table-footer-status">
+              <span id="tableRecordsCount">0 registros</span>
+              <span>Proteção de dados: Armazenamento manual e local sem compartilhamento bancário (Gitman, 2010)</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- ===================================================================
+             ABA 3: ORÇAMENTOS E METAS FINANCEIRAS (Objetivo 6)
+             =================================================================== -->
+        <section id="tab-budgets" class="tab-content">
+          <div style="margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
+            <div>
+              <h2 style="font-size: 20px; color: var(--blue-900);">Planejamento & Tetos Orçamentários</h2>
+              <p style="font-size: 13px; color: var(--text-muted);">Defina limites de gastos por categoria para evitar endividamento (CNC, 2023)</p>
+            </div>
+          </div>
+
+          <div id="budgetsListContainer"></div>
+
+          <div style="margin: 36px 0 20px 0; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-light); padding-top: 24px;">
+            <div>
+              <h2 style="font-size: 20px; color: var(--blue-900);">Metas Financeiras & Sonhos</h2>
+              <p style="font-size: 13px; color: var(--text-muted);">Acompanhe o progresso da sua reserva de emergência e patrimônio sustentável</p>
+            </div>
+            <button class="btn btn-primary btn-sm" onclick="app.openGoalModal()">+ Nova Meta</button>
+          </div>
+
+          <div id="goalsListContainer" class="goals-grid"></div>
+        </section>
+
+        <!-- ===================================================================
+             ABA 4: PSICOLOGIA ECONÔMICA & CONSUMO CONSCIENTE
+             =================================================================== -->
+        <section id="tab-psychology" class="tab-content">
+          <div class="psych-banner">
+            <h2>🧠 Psicologia Econômica & Controle de Impulso</h2>
+            <p>
+              Segundo <strong>Ferreira (2007)</strong>, as decisões financeiras não são puramente racionais; são profundamente afetadas por emoções e vieses cognitivos.
+              De acordo com <strong>Galbraith (1963)</strong> e <strong>Max Weber (1967)</strong>, o crédito fácil e o estímulo constante criam necessidades artificiais que aprisionam o consumidor em dívidas. Use as ferramentas abaixo para frear o impulso!
+            </p>
+          </div>
+
+          <div class="psych-grid-cards">
+            <!-- Calculadora do Custo em Horas de Trabalho -->
+            <div class="psych-card">
+              <h3>⏱️ Calculadora de Custo em Horas de Vida</h3>
+              <p class="psych-card-sub">
+                Quanto tempo de trabalho este item realmente custa para você?
+                <br>Valor da sua hora estimada: <strong id="calcHourlyRateDisplay" style="color: var(--blue-700);">R$ 0,00</strong>
+              </p>
+
+              <div class="form-group">
+                <label class="form-label">Preço do Produto que Deseja Comprar (R$):</label>
+                <div style="display: flex; gap: 8px;">
+                  <input type="number" step="0.01" id="calcItemPrice" class="form-control" placeholder="Ex: 599.90">
+                  <button type="button" id="calcWorkHoursBtn" class="btn btn-primary">Calcular</button>
+                </div>
+              </div>
+
+              <div id="calcWorkHoursResult" style="display: none;"></div>
+            </div>
+
+            <!-- Lista de Espera 72 Horas contra Consumo por Impulso -->
+            <div class="psych-card">
+              <h3>⏳ Quarentena dos Desejos (Regra das 72 Horas)</h3>
+              <p class="psych-card-sub">
+                Viu algo que quer comprar? Não compre na hora. Coloque aqui e aguarde 3 dias. 
+                Se o impulso passar, você evitou uma dívida desnecessária.
+              </p>
+
+              <form id="impulseForm">
+                <div class="form-group">
+                  <input type="text" id="impulseName" class="form-control" placeholder="Nome do item (ex: Tênis, Smartwatch...)" required>
+                </div>
+                <div class="form-row-2">
+                  <div class="form-group">
+                    <input type="number" step="0.01" id="impulsePrice" class="form-control" placeholder="Preço (R$)" required>
+                  </div>
+                  <div class="form-group">
+                    <input type="text" id="impulseReason" class="form-control" placeholder="Por que quer comprar?">
+                  </div>
+                </div>
+                <button type="submit" class="btn btn-secondary btn-sm" style="width: 100%;">
+                  + Colocar em Espera (72 Horas)
+                </button>
+              </form>
+
+              <div style="margin-top: 18px;">
+                <h4 style="font-size: 13px; color: var(--blue-900); margin-bottom: 8px;">Itens em Quarentena:</h4>
+                <div id="impulseListContainer"></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ===================================================================
+             ABA 5: RELATÓRIOS ANALÍTICOS (Objetivo 4)
+             =================================================================== -->
+        <section id="tab-reports" class="tab-content">
+          <div class="report-paper">
+            <div class="report-header-banner">
+              <div>
+                <h2 id="reportPeriodTitle">Relatório Financeiro Consolidado</h2>
+                <p style="font-size: 13px; color: var(--text-muted);">Visão detalhada de receitas, despesas e desempenho orçamentário</p>
+              </div>
+              <div class="report-actions">
+                <button class="btn btn-secondary btn-sm" onclick="app.exportCSV()">
+                  📥 Exportar CSV
+                </button>
+                <button class="btn btn-primary btn-sm" onclick="app.printReport()">
+                  🖨️ Imprimir / Salvar PDF
+                </button>
+              </div>
+            </div>
+
+            <div id="reportMetricsContainer"></div>
+
+            <h3 style="font-size: 15px; color: var(--blue-900); margin: 24px 0 12px 0;">Distribuição Consolidada de Gastos por Categoria</h3>
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Categoria</th>
+                    <th>Total Gasto</th>
+                    <th>% do Total</th>
+                    <th>Teto Previsto</th>
+                    <th>Status Orçamentário</th>
+                  </tr>
+                </thead>
+                <tbody id="reportCategorySummaryTable"></tbody>
+              </table>
+            </div>
+
+            <div style="margin-top: 32px; padding: 16px; background: var(--blue-soft); border-radius: var(--radius-md); font-size: 12px; color: var(--text-secondary); line-height: 1.6;">
+              <strong>Fundamentação Metodológica:</strong>
+              Conforme apontado por <strong>Gitman (2010)</strong>, o acompanhamento sistemático de receitas e despesas operacionais é pré-requisito indispensável para a manutenção do equilíbrio orçamentário. Este relatório sintetiza a aplicação dos conceitos de engenharia de software (Pressman & Maxim, 2016) e alfabetização financeira (Potrich, Vieira e Kirch, 2015).
+            </div>
+          </div>
+        </section>
+
+        <!-- ===================================================================
+             ABA 6: GERENCIADOR DE CATEGORIAS (Objetivo 3)
+             =================================================================== -->
+        <section id="tab-categories" class="tab-content">
+          <div style="margin-bottom: 22px; display: flex; justify-content: space-between; align-items: center;">
+            <div>
+              <h2 style="font-size: 20px; color: var(--blue-900);">Gerenciador de Categorias</h2>
+              <p style="font-size: 13px; color: var(--text-muted);">Crie e personalize categorias manuais para organizar suas movimentações</p>
+            </div>
+            <button class="btn btn-primary btn-sm" onclick="app.openModal('modalCategory')">
+              + Nova Categoria
+            </button>
+          </div>
+
+          <div id="categoriesGridContainer" class="category-manager-grid"></div>
+        </section>
+
+        <!-- ===================================================================
+             ABA 7: PERFIL & AJUSTES DO SISTEMA
+             =================================================================== -->
+        <section id="tab-profile" class="tab-content">
+          <div style="max-width: 720px;">
+            <div class="card" style="background: #ffffff; padding: 24px; border-radius: var(--radius-lg); border: 1px solid var(--border-light); margin-bottom: 24px;">
+              <h3 style="font-size: 17px; color: var(--blue-900); margin-bottom: 6px;">Perfil do Usuário</h3>
+              <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 18px;">Informações para personalização dos relatórios e cálculos do sistema</p>
+
+              <form id="profileForm">
+                <div class="form-row-2">
+                  <div class="form-group">
+                    <label class="form-label">Nome Completo:</label>
+                    <input type="text" id="profileName" class="form-control" required>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">E-mail Acadêmico / Pessoal:</label>
+                    <input type="email" id="profileEmail" class="form-control">
+                  </div>
+                </div>
+
+                <div class="form-row-2">
+                  <div class="form-group">
+                    <label class="form-label">Renda Mensal Estimada (R$):</label>
+                    <input type="number" step="0.01" id="profileMonthlyIncome" class="form-control">
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Horas de Trabalho por Mês:</label>
+                    <input type="number" id="profileWorkHours" class="form-control" placeholder="160">
+                  </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-sm">Salvar Alterações</button>
+              </form>
+            </div>
+
+            <!-- Gerenciamento de Dados & Backup -->
+            <div class="card" style="background: #ffffff; padding: 24px; border-radius: var(--radius-lg); border: 1px solid var(--border-light);">
+              <h3 style="font-size: 17px; color: var(--blue-900); margin-bottom: 6px;">Segurança & Persistência de Dados</h3>
+              <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 18px;">Seus dados são 100% privados e salvos localmente (conforme proposto no artigo)</p>
+
+              <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 18px;">
+                <button class="btn btn-secondary btn-sm" onclick="app.exportBackupJSON()">
+                  💾 Exportar Backup Completo (JSON)
+                </button>
+
+                <label class="btn btn-secondary btn-sm" style="cursor: pointer;">
+                  📂 Restaurar Backup (JSON)
+                  <input type="file" accept=".json" style="display: none;" onchange="app.importBackupJSON(event)">
+                </label>
+
+                <button class="btn btn-secondary btn-sm" onclick="app.resetAllDataToSample()">
+                  🔄 Recarregar Dados de Demonstração
+                </button>
+              </div>
+
+              <div style="border-top: 1px solid var(--border-light); padding-top: 14px;">
+                <button class="btn btn-outline-danger btn-sm" onclick="app.clearAllData()">
+                  🗑️ Limpar Todos os Dados e Começar do Zero
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- ===================================================================
+       MODAL 1: CADASTRO / EDIÇÃO DE MOVIMENTAÇÃO (RECEITA / DESPESA)
+       =================================================================== -->
+  <div id="modalTransaction" class="modal-overlay">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3 id="modalTransactionTitle">Nova Movimentação</h3>
+        <button class="modal-close-btn" onclick="app.closeModal('modalTransaction')">✕</button>
+      </div>
+      <form id="transactionForm">
+        <div class="modal-body">
+          <div class="form-row-2">
+            <div class="form-group">
+              <label class="form-label">Tipo de Movimentação *</label>
+              <select id="txType" class="form-control" onchange="app.updateCategoryOptionsByType(this.value)">
+                <option value="expense">Despesa (Saída)</option>
+                <option value="income">Receita (Entrada)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Valor (R$) *</label>
+              <input type="number" step="0.01" id="txAmount" class="form-control" placeholder="0,00" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Descrição da Movimentação *</label>
+            <input type="text" id="txDescription" class="form-control" placeholder="Ex: Supermercado Muffato, Gasolina Shell, Salário..." required>
+            <!-- Badge de Sugestão de Auto-Categorização (Objetivo 3) -->
+            <div id="autoCategoryBadge" class="auto-category-badge"></div>
+          </div>
+
+          <div class="form-row-2">
+            <div class="form-group">
+              <label class="form-label">Categoria *</label>
+              <select id="txCategory" class="form-control" required></select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Data da Movimentação *</label>
+              <input type="date" id="txDate" class="form-control" required>
+            </div>
+          </div>
+
+          <div class="form-row-2">
+            <div class="form-group">
+              <label class="form-label">Forma de Pagamento</label>
+              <select id="txPaymentMethod" class="form-control">
+                <option value="PIX">PIX</option>
+                <option value="Cartão de Débito">Cartão de Débito</option>
+                <option value="Cartão de Crédito">Cartão de Crédito</option>
+                <option value="Dinheiro">Dinheiro Físico</option>
+                <option value="Boleto">Boleto Bancário</option>
+                <option value="Transferência / TED">Transferência / TED</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Observações / Detalhes</label>
+              <input type="text" id="txNotes" class="form-control" placeholder="Ex: Comprovante guardado...">
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="app.closeModal('modalTransaction')">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Salvar Registro</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ===================================================================
+       MODAL 2: CADASTRO DE NOVA CATEGORIA
+       =================================================================== -->
+  <div id="modalCategory" class="modal-overlay">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3>Criar Nova Categoria</h3>
+        <button class="modal-close-btn" onclick="app.closeModal('modalCategory')">✕</button>
+      </div>
+      <form id="categoryForm">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label">Nome da Categoria *</label>
+            <input type="text" id="catName" class="form-control" placeholder="Ex: Pet Shop, Academia, Cursos..." required>
+          </div>
+          <div class="form-row-2">
+            <div class="form-group">
+              <label class="form-label">Tipo *</label>
+              <select id="catType" class="form-control">
+                <option value="expense">Despesa</option>
+                <option value="income">Receita</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Cor de Destaque</label>
+              <input type="color" id="catColor" class="form-control" value="#2563eb" style="height: 38px; padding: 2px;">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Teto Orçamentário Mensal (R$) - Opcional</label>
+            <input type="number" step="0.01" id="catBudget" class="form-control" placeholder="Ex: 350.00">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="app.closeModal('modalCategory')">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Salvar Categoria</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ===================================================================
+       MODAL 3: CADASTRO DE META FINANCEIRA
+       =================================================================== -->
+  <div id="modalGoal" class="modal-overlay">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3>Nova Meta Financeira</h3>
+        <button class="modal-close-btn" onclick="app.closeModal('modalGoal')">✕</button>
+      </div>
+      <form id="goalForm">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label">Título da Meta *</label>
+            <input type="text" id="goalTitle" class="form-control" placeholder="Ex: Reserva de Emergência, Viagem, Curso..." required>
+          </div>
+          <div class="form-row-2">
+            <div class="form-group">
+              <label class="form-label">Valor Alvo (R$) *</label>
+              <input type="number" step="0.01" id="goalTargetAmount" class="form-control" placeholder="Ex: 5000.00" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Valor Já Guardado (R$)</label>
+              <input type="number" step="0.01" id="goalCurrentAmount" class="form-control" placeholder="0.00">
+            </div>
+          </div>
+          <div class="form-row-2">
+            <div class="form-group">
+              <label class="form-label">Data Estimada para Conclusão</label>
+              <input type="date" id="goalDate" class="form-control">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Descrição / Motivação</label>
+              <input type="text" id="goalDescription" class="form-control" placeholder="Ex: Proteger minha família contra imprevistos">
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="app.closeModal('modalGoal')">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Criar Meta</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ===================================================================
+       MODAL 4: SOBRE O PROJETO & ARTIGO CIENTÍFICO (UniCesumar)
+       =================================================================== -->
+  <div id="modalAbout" class="modal-overlay">
+    <div class="modal-dialog" style="max-width: 600px;">
+      <div class="modal-header">
+        <h3>Sobre a Pesquisa & Artigo Científico</h3>
+        <button class="modal-close-btn" onclick="app.closeModal('modalAbout')">✕</button>
+      </div>
+      <div class="modal-body about-article-content">
+        <p style="font-weight: 700; color: var(--blue-900); font-size: 15px;">
+          APLICATIVO DE GESTÃO FINANCEIRA PESSOAL: UMA FERRAMENTA PARA ORGANIZAÇÃO E CONTROLE DE GESTÃO
+        </p>
+        <p style="margin-top: 6px;">
+          <strong>Autores:</strong> Dennis Gabriel de Oliveira e Murilo da Silva Santos<br>
+          <strong>Instituição:</strong> Centro Universitário Cesumar – UNICESUMAR (Curitiba – PR)<br>
+          <strong>Evento:</strong> XIII Mostra Interna de Trabalhos de Iniciação Científica e VI Mostra Interna de Iniciação em Desenvolvimento Tecnológico e Inovação.
+        </p>
+
+        <h4>Objetivos Específicos Atendidos no Sistema:</h4>
+        <ul>
+          <li>✅ <strong>Interface Acessível e Intuitiva:</strong> Design focado em usabilidade, com suporte e tipografia ampla para inclusão de idosos;</li>
+          <li>✅ <strong>Gerenciamento de Receitas e Despesas:</strong> CRUD completo (cadastro, consulta, alteração e exclusão);</li>
+          <li>✅ <strong>Categorização Automática e Manual:</strong> Identificação inteligente por palavras-chave com opção de edição manual;</li>
+          <li>✅ <strong>Gráficos e Relatórios:</strong> Visualização gráfica de despesas por categoria, histórico mensal e fluxo diário;</li>
+          <li>✅ <strong>Histórico de Movimentações:</strong> Filtros avançados por mês, categoria, tipo e busca textual;</li>
+          <li>✅ <strong>Controle Orçamentário e Metas:</strong> Tetos de gastos com alertas preventivos de endividamento e metas de reserva.</li>
+        </ul>
+
+        <h4>Tecnologias Utilizadas:</h4>
+        <p>HTML5, CSS3 (Design System em Azul), JavaScript ES6+ e Back-end Java com persistência estruturada de dados.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" onclick="app.closeModal('modalAbout')">Entendido</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTAINER DE TOASTS FLUTUANTES -->
+  <div id="toastContainer" class="toast-container"></div>
+
+  <!-- SCRIPTS DA APLICAÇÃO -->
+  <script src="js/mockData.js"></script>
+  <script src="js/autoCategory.js"></script>
+  <script src="js/charts.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
